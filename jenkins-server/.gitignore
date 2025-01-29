@@ -1,0 +1,4 @@
+../EKS/.terraform
+.terraform.lock.hcl
+.iml
+.idea
