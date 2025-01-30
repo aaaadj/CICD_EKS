@@ -1,7 +1,7 @@
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = module.eks.cluster_certificate_authority_data
-  token                  = data.aws_eks_cluster_auth.cluster.token
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = module.eks.cluster_auth_token
 }
 
 resource "kubernetes_deployment" "nginx" {
