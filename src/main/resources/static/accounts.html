@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .form-container, .result-container {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result-container {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+<h1>Account Management</h1>
+<button onclick="location.href='index.html'" style="margin-bottom: 20px;">Back to Home</button>
+
+<div class="form-container">
+    <h2>Create Account</h2>
+    <form id="createAccountForm">
+        <label for="accountId">Account ID</label>
+        <input type="text" id="accountId" placeholder="Enter Account ID" required />
+
+        <label for="balance">Initial Balance</label>
+        <input type="number" id="balance" placeholder="Enter Initial Balance" step="0.01" required />
+
+        <label for="accountType">Account Type</label>
+        <input type="text" id="accountType" placeholder="Enter Account Type (e.g., savings, checking)" required />
+
+        <label for="currency">Currency</label>
+        <input type="text" id="currency" placeholder="Enter Currency Code (e.g., USD)" required />
+
+        <button type="submit">Create Account</button>
+    </form>
+</div>
+
+<div class="form-container">
+    <h2>Delete Account</h2>
+    <form id="deleteAccountForm">
+        <label for="deleteAccountId">Account ID</label>
+        <input type="text" id="deleteAccountId" placeholder="Enter Account ID to Delete" required />
+
+        <button type="submit" class="delete-btn">Delete Account</button>
+    </form>
+</div>
+
+<div id="result" class="result-container" style="display: none;"></div>
+
+<script>
+    const createAccountForm = document.getElementById('createAccountForm');
+    const deleteAccountForm = document.getElementById('deleteAccountForm');
+    const resultContainer = document.getElementById('result');
+
+    createAccountForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const account = {
+            accountId: document.getElementById('accountId').value,
+            balance: parseFloat(document.getElementById('balance').value),
+            accountType: document.getElementById('accountType').value,
+            currency: document.getElementById('currency').value,
+        };
+
+        try {
+            const response = await fetch('/api/v1/accounts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(account),
+            });
+
+            const result = await response.json();
+            displayResult(`Account created successfully: ${JSON.stringify(result)}`);
+        } catch (error) {
+            displayResult('Error: Unable to create account.');
+        }
+    });
+
+    deleteAccountForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const accountId = document.getElementById('deleteAccountId').value;
+
+        try {
+            const response = await fetch(`/api/v1/accounts/${accountId}`, {
+                method: 'DELETE',
+            });
+
+            const result = await response.text();
+            displayResult(result);
+        } catch (error) {
+            displayResult('Error: Unable to delete account.');
+        }
+    });
+
+    function displayResult(message) {
+        resultContainer.style.display = 'block';
+        resultContainer.textContent = message;
+    }
+</script>
+</body>
+</html>

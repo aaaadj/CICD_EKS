@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Balance System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .form-container, .result-container {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-container {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<h1>Real-Time Balance System</h1>
+<button onclick="location.href='index.html'" style="margin-bottom: 20px;">Back to Home</button>
+
+<div class="form-container">
+    <h2>Process a Transaction</h2>
+    <form id="transactionForm">
+        <label for="transactionId">Transaction ID</label>
+        <input type="text" id="transactionId" placeholder="Enter Transaction ID" required />
+
+        <label for="sourceAccountId">Source Account ID</label>
+        <input type="text" id="sourceAccountId" placeholder="Enter Source Account ID" required />
+
+        <label for="destinationAccountId">Destination Account ID</label>
+        <input type="text" id="destinationAccountId" placeholder="Enter Destination Account ID" required />
+
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" placeholder="Enter Amount" step="0.01" required />
+
+        <label for="timestamp">Timestamp</label>
+        <input type="datetime-local" id="timestamp" required />
+
+        <button type="submit">Submit Transaction</button>
+    </form>
+</div>
+
+<div class="form-container">
+    <h2>Check Transaction Status</h2>
+    <form id="statusForm">
+        <label for="checkTransactionId">Transaction ID</label>
+        <input type="text" id="checkTransactionId" placeholder="Enter Transaction ID" required />
+
+        <button type="submit">Check Status</button>
+    </form>
+</div>
+
+<div id="result" class="result-container" style="display: none;"></div>
+
+<script>
+    const transactionForm = document.getElementById('transactionForm');
+    const statusForm = document.getElementById('statusForm');
+    const resultContainer = document.getElementById('result');
+
+    transactionForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const transaction = {
+            transactionId: document.getElementById('transactionId').value,
+            sourceAccountId: document.getElementById('sourceAccountId').value,
+            destinationAccountId: document.getElementById('destinationAccountId').value,
+            amount: parseFloat(document.getElementById('amount').value),
+            timestamp: document.getElementById('timestamp').value,
+        };
+
+        try {
+            const response = await fetch('/api/v1/transactions/process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(transaction),
+            });
+
+            const result = await response.text();
+            displayResult(result);
+        } catch (error) {
+            displayResult('Error: Unable to process transaction.');
+        }
+    });
+
+    statusForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const transactionId = document.getElementById('checkTransactionId').value;
+
+        try {
+            const response = await fetch(`/api/v1/transactions/${transactionId}/status`, {
+                method: 'GET',
+            });
+
+            const result = await response.text();
+            displayResult(result);
+        } catch (error) {
+            displayResult('Error: Unable to check transaction status.');
+        }
+    });
+
+    function displayResult(message) {
+        resultContainer.style.display = 'block';
+        resultContainer.textContent = message;
+    }
+</script>
+</body>
+</html>
