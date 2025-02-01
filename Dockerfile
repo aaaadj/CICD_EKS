@@ -1,14 +1,20 @@
-# 使用 JDK 1.8 基础镜像
+# Use JDK 1.8 base image
 FROM openjdk:8-jdk-alpine
 
-# 设置工作目录
+# Install bash, curl, and telnet
+RUN apk update && apk add --no-cache \
+    bash \
+    curl \
+    telnet \
+
+# Set working directory
 WORKDIR /app
 
-# 将本地构建好的 JAR 文件复制到镜像内
+# Copy the locally built JAR file into the image
 COPY target/real-time-balance-1.0-SNAPSHOT.jar /app/real-time-balance.jar
 
-# 暴露端口
+# Expose port
 EXPOSE 8080
 
-# 启动 Spring Boot 应用
+# Start the Spring Boot application
 ENTRYPOINT ["java", "-jar", "/app/real-time-balance.jar"]
