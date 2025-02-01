@@ -5,7 +5,7 @@ FROM openjdk:8-jdk-alpine
 RUN apk update && apk add --no-cache \
     bash \
     curl \
-    telnet \
+    telnet
 
 # Set working directory
 WORKDIR /app
