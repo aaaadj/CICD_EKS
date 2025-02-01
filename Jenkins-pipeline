@@ -31,8 +31,10 @@ pipeline {
     stage('Pushing to ECR') {
      steps{
          script {
-                sh 'aws ecr get-login-password --region ap-east-1 | docker login --username AWS --password-stdin 954976321856.dkr.ecr.ap-east-1.amazonaws.com/my-docker-repo'
-                sh 'docker push 954976321856.dkr.ecr.ap-east-1.amazonaws.com/my-docker-repo:latest'
+            def imageTag = "my-docker-repo:${GIT_COMMIT}"  // Use commit hash as tag
+            sh "aws ecr get-login-password --region ap-east-1 | docker login --username AWS --password-stdin 954976321856.dkr.ecr.ap-east-1.amazonaws.com"
+            sh "docker tag ${imageTag} 954976321856.dkr.ecr.ap-east-1.amazonaws.com/${imageTag}"
+            sh "docker push 954976321856.dkr.ecr.ap-east-1.amazonaws.com/${imageTag}"
          }
         }
       }
@@ -41,7 +43,11 @@ pipeline {
         steps{
             script {
                 withKubeConfig([credentialsId: 'K8S', serverUrl: '']) {
-                sh ('kubectl apply -f  eks-deploy-k8s.yaml')
+                // First, apply the full YAML configuration (including any changes to deployment, services, etc.)
+                sh "kubectl apply -f eks-deploy-k8s.yaml"
+
+                // Now, update the image with the unique tag (using the commit hash)
+                sh "kubectl set image deployment/springboot-app-deployment my-springboot-app=954976321856.dkr.ecr.ap-east-1.amazonaws.com/my-docker-repo:${GIT_COMMIT}"
                 }
             }
         }
