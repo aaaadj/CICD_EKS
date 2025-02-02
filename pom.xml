@@ -16,6 +16,8 @@
     </parent>
 
     <dependencies>
+
+
         <!-- Spring Boot Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -80,6 +82,20 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
+        <!-- Spring Data Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>2.0.30</version>
+        </dependency>
+
+
     </dependencies>
 
     <repositories>
@@ -92,6 +108,11 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </repository>
+
+        <repository>
+            <id>nexus</id>
+            <url>https://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>
     <pluginRepositories>

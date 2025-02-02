@@ -1,10 +1,9 @@
 package com.example.transaction.model;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.example.transaction.enums.TransactionStatus;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -26,6 +25,10 @@ public class Transaction {
 
     @Column(nullable = false)
     private LocalDateTime timestamp;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionStatus status;  // Use enum type for status
 
     // Getters and Setters
     public String getTransactionId() {
@@ -67,4 +70,13 @@ public class Transaction {
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
+
+    public TransactionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TransactionStatus status) {
+        this.status = status;
+    }
+
 }

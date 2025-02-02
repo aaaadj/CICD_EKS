@@ -42,4 +42,8 @@ public class AccountService {
         accountRepository.deleteById(accountId);
     }
 
+    public Account save(Account account) {
+        return accountRepository.save(account);
+    }
+
 }

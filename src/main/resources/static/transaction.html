@@ -60,7 +60,7 @@
     <h2>Process a Transaction</h2>
     <form id="transactionForm">
         <label for="transactionId">Transaction ID</label>
-        <input type="text" id="transactionId" placeholder="Enter Transaction ID" required />
+        <input type="text" id="transactionId" placeholder="Enter Transaction ID" />
 
         <label for="sourceAccountId">Source Account ID</label>
         <input type="text" id="sourceAccountId" placeholder="Enter Source Account ID" required />
@@ -70,9 +70,6 @@
 
         <label for="amount">Amount</label>
         <input type="number" id="amount" placeholder="Enter Amount" step="0.01" required />
-
-        <label for="timestamp">Timestamp</label>
-        <input type="datetime-local" id="timestamp" required />
 
         <button type="submit">Submit Transaction</button>
     </form>
@@ -101,8 +98,7 @@
             transactionId: document.getElementById('transactionId').value,
             sourceAccountId: document.getElementById('sourceAccountId').value,
             destinationAccountId: document.getElementById('destinationAccountId').value,
-            amount: parseFloat(document.getElementById('amount').value),
-            timestamp: document.getElementById('timestamp').value,
+            amount: parseFloat(document.getElementById('amount').value)
         };
 
         try {

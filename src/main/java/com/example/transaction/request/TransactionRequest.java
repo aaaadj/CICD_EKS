@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 public class TransactionRequest {
 
-    @NotNull(message = "Transaction ID cannot be null")
     private String transactionId;
 
     @NotNull(message = "Source account ID cannot be null")
@@ -20,7 +19,6 @@ public class TransactionRequest {
     @DecimalMin(value = "0.01", message = "Transaction amount must be greater than zero")
     private BigDecimal amount;
 
-    @NotNull(message = "Timestamp cannot be null")
     private LocalDateTime timestamp;
 
     // Getters and Setters

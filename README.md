@@ -127,10 +127,9 @@ kubectl apply -f eks-deploy-k8s.yaml
 
 ### 7. Troubleshooting
 
-- **Jenkins Not Accessible**: If Jenkins is not accessible via the public IP, ensure that the security group allows inbound traffic on port 8080 and that the EC2 instance is running.
 - **ECR Push Failures**: If Docker images are not pushing to ECR, check the AWS credentials and ensure the AWS CLI is properly configured in the Jenkins instance.
 - **Kubernetes Deployment Issues**: If the Kubernetes deployment fails, use `kubectl logs` to check the logs of the application pods for errors.
 
-### 8. Conclusion
+### 8. End
 
 This setup provides a complete, automated CI/CD pipeline for a Java-based financial application, deploying it on AWS infrastructure using Terraform, Jenkins, Docker, and Kubernetes (EKS). The infrastructure is fully managed using Terraform, and Jenkins automates the application build, Docker image creation, and deployment process. Simply commit your code, and the Jenkins pipeline will handle the rest!

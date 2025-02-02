@@ -29,10 +29,11 @@ public class TransactionController {
     @PostMapping("/process")
     public ResponseEntity<String> processTransaction(@Valid @RequestBody TransactionRequest transactionRequest) {
         try {
-            transactionService.processTransaction(transactionRequest);
-            return ResponseEntity.ok("Transaction processed successfully.");
+            // Enqueue the transaction request to Redis for processing
+            transactionService.enqueueTransaction(transactionRequest);
+            return ResponseEntity.ok("Transaction is being processed");
         } catch (TransactionException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Transaction failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error processing transaction: " + e.getMessage());
         }
     }
 
