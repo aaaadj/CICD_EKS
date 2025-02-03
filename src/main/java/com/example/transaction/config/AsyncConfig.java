@@ -23,7 +23,7 @@ public class AsyncConfig {
     @Value("${transaction.threadPool.keepAliveSeconds}")
     private int keepAliveSeconds;
 
-    @Bean
+    @Bean("transactionTaskExecutor")
     public TaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setCorePoolSize(corePoolSize);

@@ -36,8 +36,48 @@ This project demonstrates a financial product application with a fully automated
 - **/eks-deploy-k8s.yaml**: Kubernetes deployment and service YAML files to deploy the application to EKS.
 - **/pom.xml**: Maven configuration for the Java application.
 - **/jenkins-pipeline**: Jenkins pipeline file for automating the CI/CD process.
-
 ---
+
+
+This is a diagram showing the flow of requests in my project.
+
+```mermaid
+graph TD;
+    A[Client] -->|HTTP Request| B[AccountController];
+    A[Client] -->|HTTP Request| C[TransactionController];
+    B --> D[AccountService];
+    C --> E[TransactionService];
+    E --> F[TransactionRepository];
+    E --> G[AccountService];
+    E --> H[Redis (Locking)];
+    E --> I[TransactionEventHandler];
+    I --> E;
+    F --> J[Database];
+    G --> J;
+    E --> K[TransactionProcessor];
+    K --> L[TransactionStatusHandler];
+    L --> M[Database];
+
+    subgraph Service Layer
+        E[TransactionService]
+        D[AccountService]
+    end
+
+    subgraph Persistence Layer
+        F[TransactionRepository]
+        J[Database]
+    end
+
+    subgraph Event Layer
+        I[TransactionEventHandler]
+        K[TransactionProcessor]
+        L[TransactionStatusHandler]
+    end
+
+    subgraph Locking Layer
+        H[Redis]
+    end
+
 ## Prerequisites
 
 Before running the setup, ensure you have the following:

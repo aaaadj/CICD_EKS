@@ -2,7 +2,7 @@
 data "aws_availability_zones" "azs" {
 
 }
-# 获取 EKS 集群的认证信息
+# get EKS cluster name
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_name
   depends_on = [
@@ -10,7 +10,7 @@ data "aws_eks_cluster" "cluster" {
   ]
 }
 
-# 获取 EKS 集群的认证令牌
+# get EKS cluster auth token
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
   depends_on = [

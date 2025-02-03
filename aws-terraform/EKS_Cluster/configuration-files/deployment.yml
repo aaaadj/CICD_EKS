@@ -1,3 +1,4 @@
+# this file is test deploy a nginx after eks created.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

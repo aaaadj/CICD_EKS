@@ -20,18 +20,12 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    /**
-     * Endpoint to process a transaction.
-     *
-     * @param transactionRequest the transaction details
-     * @return ResponseEntity indicating success or failure
-     */
     @PostMapping("/process")
     public ResponseEntity<String> processTransaction(@Valid @RequestBody TransactionRequest transactionRequest) {
         try {
-            // Enqueue the transaction request to Redis for processing
+            // Enqueue the transaction and save it to DB immediately
             transactionService.enqueueTransaction(transactionRequest);
-            return ResponseEntity.ok("Transaction is being processed");
+            return ResponseEntity.ok("Transaction accepted");
         } catch (TransactionException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error processing transaction: " + e.getMessage());
         }
