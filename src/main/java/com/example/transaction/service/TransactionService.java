@@ -47,7 +47,7 @@ public class TransactionService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
-    private static final String TRANSACTION_LOCK_KEY = "transaction_lock:";
+    private static final String TRANSACTION_LOCK_KEY = "TRANSACTION_LOCK:";
 
     private static final String TASK_LOCK_KEY = "PENDING_TRANSACTION_TASK_LOCK"; // Redis key for task lock
 
@@ -180,7 +180,7 @@ public class TransactionService {
     public String getTransactionStatus(String transactionId) throws TransactionException {
         Transaction transaction = transactionRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new TransactionException("Transaction not found."));
-        return "Transaction ID: " + transaction.getTransactionId() + ", Status: SUCCESS";
+        return transaction.getStatus().toString();
     }
 
     /**

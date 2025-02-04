@@ -35,7 +35,7 @@ public class TransactionController {
      * Endpoint to get transaction status by ID.
      *
      * @param transactionId the ID of the transaction
-     * @return the status of the transaction
+     * @return the status of the transaction {see #TransactionStatus}
      */
     @GetMapping("/{transactionId}/status")
     public ResponseEntity<String> getTransactionStatus(@PathVariable String transactionId) {
