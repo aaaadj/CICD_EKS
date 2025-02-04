@@ -11,8 +11,11 @@ This project demonstrates a financial product application with a fully automated
         - **VPC** with public/private subnets
         - **EKS Cluster** for Kubernetes orchestration
         - **EC2 Instance** hosting Jenkins server
+        - **ECR Module** store Docker images
+        - **ElastiCache Module** for system data cache and lock use
+        - **RDS Module** for system database
     - Security groups configured for SSH, HTTP, and Kubernetes access
-
+    - S3 bucket place terraform state file
 2. **CI/CD Layer**:
     - **Jenkins Pipeline** with stages for:
         - Code checkout
@@ -36,6 +39,8 @@ This project demonstrates a financial product application with a fully automated
 - **/eks-deploy-k8s.yaml**: Kubernetes deployment and service YAML files to deploy the application to EKS.
 - **/pom.xml**: Maven configuration for the Java application.
 - **/jenkins-pipeline**: Jenkins pipeline file for automating the CI/CD process.
+- **/mock_generator_create_account**:simple python script generate huge numbers of data for testing purpose.
+- **/chaos-experiment.json**:kubechaos experiment config file,with pipeline easily do resilience test on EKS Cluster.
 ---
 
 
@@ -132,7 +137,7 @@ No manual steps are required for pushing Docker images or deploying to Kubernete
 - `eks-deploy-k8s.yaml` contains the Kubernetes deployment configuration for the Spring Boot application.(switch the repo to your ECR)
 - The configuration includes:
     - **Deployment**: A Kubernetes deployment with 4 replicas of the Spring Boot application.
-    - **Service**: A LoadBalancer service to expose the application on port 80, routing traffic to port 8080 of the containers.
+    - **Service**: A LoadBalancer service to expose the application on port 80, routing traffic to port 8081 of the containers.
 
 To deploy the application on EKS, the pipeline will automatically apply the Kubernetes YAML configuration using the following command:
 ```bash
@@ -141,16 +146,38 @@ kubectl apply -f eks-deploy-k8s.yaml
 
 ### 6. Testing and Verification
 
-- After the pipeline completes, the Spring Boot application should be running on the EKS cluster.
-- To verify the deployment:
-    - Use the Kubernetes `kubectl get pods` command to check the status of the deployed pods.
-    - Access the application via the LoadBalancer URL (provided by the EKS service) to confirm that the application is correctly deployed and running.
-- Build the Java Application (Optional):
-    - You can manually build the Java application using Maven if needed:
+- **Deployment Verification**:
+    - After the pipeline completes, the Spring Boot application should be running on the EKS cluster.
+    - To verify the deployment:
+        - Use the Kubernetes `kubectl get pods` command to check the status of the deployed pods.
+        - Access the application via the LoadBalancer URL (provided by the EKS service) to confirm that the application is correctly deployed and running.
+
+- **Automated Testing**:
+    - The project includes comprehensive unit tests and integration tests.
+    - To run the tests and generate code coverage reports, use the following Maven command:
+    ```bash
+    mvn clean test
+    ```
+    - This will trigger all tests and provide a JaCoCo-generated code coverage report.
+
+- **Build the Java Application (Optional)**:
+    - If needed, you can manually build the Java application using Maven:
     ```bash
     mvn clean package
     ```
-    The application will be packaged into a JAR file located in the /target directory.
+    - The application will be packaged into a JAR file located in the `/target` directory.
+
+- **Mock Data Generation**:
+    - The project includes a Python script, `mock_generator__create_account.py`, located in the root directory, which generates large volumes of mock data in CSV format. This can be used for stress testing the application via JMeter.
+    - To generate mock data, run the Python script:
+    ```bash
+    python mock_generator__create_account.py
+    ```
+    - This will output a CSV file with mock data ready for use in JMeter.
+
+- **Resilience Testing**:
+    - For resilience testing after the Kubernetes deployment, the project includes a `chaos-experiment.json` file in the root directory. This file can be used to simulate various failure scenarios and verify the system's ability to handle them in a production-like environment.
+    - To execute the resilience tests, apply the chaos experiment using the appropriate Kubernetes tools or integrate with a chaos engineering framework.
 
 ### 7. Troubleshooting
 
