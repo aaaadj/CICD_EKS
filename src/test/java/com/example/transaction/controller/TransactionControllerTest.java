@@ -72,4 +72,37 @@ public class TransactionControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Transaction not found: Transaction not found"));
     }
+
+    @Test
+    void processTransaction_shouldReturnBadRequest_whenMissingRequiredField() throws Exception {
+        // Missing sourceAccountId
+        transactionRequest.setSourceAccountId(null);
+
+        mockMvc.perform(post("/api/v1/transactions/process")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transactionRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void processTransaction_shouldReturnBadRequest_whenInvalidAmount() throws Exception {
+        // Invalid amount (less than 0.01)
+        transactionRequest.setAmount(BigDecimal.valueOf(0));
+
+        mockMvc.perform(post("/api/v1/transactions/process")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transactionRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void processTransaction_shouldReturnInternalServerError_whenUnexpectedError() throws Exception {
+        doThrow(new RuntimeException("Unexpected error")).when(transactionService).enqueueTransaction(any(TransactionRequest.class));
+
+        mockMvc.perform(post("/api/v1/transactions/process")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transactionRequest)))
+                .andExpect(status().isInternalServerError());
+    }
+
 }

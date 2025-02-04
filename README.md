@@ -72,7 +72,7 @@ terraform apply --autoapprove
 
 #### EC2 Instance and Jenkins Installation:
 ```bash
-cd /jenkins-server
+cd /aws-terrform/jenkins-server
 terraform init
 terraform apply --autoapprove
 ```
@@ -81,9 +81,33 @@ terraform apply --autoapprove
 
 Once Jenkins is installed, access the Jenkins dashboard by visiting `http://<EC2_Public_IP>:8080`.
 
+Then install other modules:
+```bash
+cd /aws-terrform/ECR_Module
+terraform init
+terraform apply --autoapprove
+```
+
+```bash
+cd /aws-terrform/EKS_Cluster
+terraform init
+terraform apply --autoapprove
+```
+```bash
+cd /aws-terrform/RDS_Module
+terraform init
+terraform apply --autoapprove
+```
+```bash
+cd /aws-terrform/ElastiCache_Module
+terraform init
+terraform apply --autoapprove
+```
+
+
 ### 3. Setting up CI/CD Pipeline in Jenkins
 
-- **Jenkins Pipeline**: The provided `jenkins-pipeline` file should be added to your Jenkins instance after initialization.
+- **Jenkins Pipeline**: The provided `jenkins-pipeline` file should be added to your Jenkins instance after initialization,notice you should change pipeline docker repository to your ECR repository.
 - **Pipeline Stages**:
     - **Cloning Git**: The pipeline will automatically pull the latest code from the Git repository.
     - **Build**: It will run the Maven build command to compile the Java project.

@@ -28,6 +28,9 @@ public class TransactionController {
             return ResponseEntity.ok("Transaction accepted");
         } catch (TransactionException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error processing transaction: " + e.getMessage());
+        } catch (RuntimeException e) {
+            // Catch unexpected errors and return a 500 Internal Server Error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred: " + e.getMessage());
         }
     }
 

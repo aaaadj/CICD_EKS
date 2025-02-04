@@ -117,14 +117,14 @@ public class TransactionService {
     }
 
     // Acquires distributed lock using Redis
-    private boolean acquireLock(String lockKey) {
+    boolean acquireLock(String lockKey) {
         return Boolean.TRUE.equals(
                 redisTemplate.opsForValue().setIfAbsent(lockKey, "locked", 30, TimeUnit.SECONDS)
         );
     }
 
     // Releases the distributed lock
-    private void releaseLock(String lockKey) {
+     void releaseLock(String lockKey) {
         try {
             redisTemplate.delete(lockKey);
             logger.debug("Released lock for {}", lockKey);
@@ -160,7 +160,7 @@ public class TransactionService {
                 request.getAmount(), source.getAccountId(), dest.getAccountId());
     }
 
-    private void handleTransactionFailure(Transaction request, Exception e) {
+    void handleTransactionFailure(Transaction request, Exception e) {
         logger.error("Transaction {} failed: {}", request.getTransactionId(), e.getMessage());
 
         transactionRepository.findByTransactionId(request.getTransactionId()).ifPresent(t -> {
