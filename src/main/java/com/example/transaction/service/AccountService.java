@@ -49,6 +49,8 @@ public class AccountService {
         Account newAccount = new Account();
         newAccount.setAccountId(accountRequest.getAccountId());
         newAccount.setBalance(accountRequest.getBalance());
+        newAccount.setAccountType(accountRequest.getAccountType());
+        newAccount.setCurrency(accountRequest.getCurrency());
 
         return accountRepository.save(newAccount);
     }

@@ -1,5 +1,6 @@
 package com.example.transaction.request;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -13,6 +14,11 @@ public class AccountRequest {
     @NotNull(message = "Balance must not be null.")
     @Positive(message = "Balance must be a positive value.")
     private BigDecimal balance;
+
+
+    private String accountType;
+
+    private String currency;
 
     // Getters and Setters
     public String getAccountId() {
@@ -29,5 +35,21 @@ public class AccountRequest {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }
