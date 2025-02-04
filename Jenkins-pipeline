@@ -1,8 +1,9 @@
 pipeline {
-   tools {
+    tools {
         maven 'Maven3'
     }
     agent any
+
     environment {
         registry = "954976321856.dkr.ecr.ap-east-1.amazonaws.com/my-docker-repo"
     }
@@ -13,44 +14,56 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/aaaadj/CICD_EKS.git']])
             }
         }
-      stage ('Build') {
-          steps {
-            sh 'mvn clean install'
-            }
-      }
-    // Building Docker images
-    stage('Building image') {
-      steps{
-        script {
-          dockerImage = docker.build registry
-        }
-      }
-    }
 
-    // Uploading Docker images into AWS ECR
-    stage('Pushing to ECR') {
-     steps{
-         script {
-            def imageTag = "my-docker-repo:${GIT_COMMIT}"  // Use commit hash as tag
-            sh "aws ecr get-login-password --region ap-east-1 | docker login --username AWS --password-stdin 954976321856.dkr.ecr.ap-east-1.amazonaws.com"
-            sh "docker tag ${imageTag} 954976321856.dkr.ecr.ap-east-1.amazonaws.com/${imageTag}"
-            sh "docker push 954976321856.dkr.ecr.ap-east-1.amazonaws.com/${imageTag}"
-         }
-        }
-      }
-
-       stage('K8S Deploy') {
-        steps{
-            script {
-                withKubeConfig([credentialsId: 'K8S', serverUrl: '']) {
-                // First, apply the full YAML configuration (including any changes to deployment, services, etc.)
-                sh "kubectl apply -f eks-deploy-k8s.yaml"
-
-                // Now, update the image with the unique tag (using the commit hash)
-                sh "kubectl set image deployment/springboot-app-deployment my-springboot-app=954976321856.dkr.ecr.ap-east-1.amazonaws.com/my-docker-repo:${GIT_COMMIT}"
+        // Running Tests
+        stage('Test') {
+            steps {
+                script {
+                    // Run Maven tests (including unit tests and integration tests)
+                    sh 'mvn clean test'
                 }
             }
         }
-       }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        // Building Docker images
+        stage('Building image') {
+            steps {
+                script {
+                    dockerImage = docker.build registry
+                }
+            }
+        }
+
+        // Uploading Docker images into AWS ECR
+        stage('Pushing to ECR') {
+            steps {
+                script {
+                    def imageTag = "my-docker-repo:${GIT_COMMIT}"  // Use commit hash as tag
+                    sh "aws ecr get-login-password --region ap-east-1 | docker login --username AWS --password-stdin 954976321856.dkr.ecr.ap-east-1.amazonaws.com"
+                    sh "docker tag ${imageTag} 954976321856.dkr.ecr.ap-east-1.amazonaws.com/${imageTag}"
+                    sh "docker push 954976321856.dkr.ecr.ap-east-1.amazonaws.com/${imageTag}"
+                }
+            }
+        }
+
+        stage('K8S Deploy') {
+            steps {
+                script {
+                    withKubeConfig([credentialsId: 'K8S', serverUrl: '']) {
+                        // First, apply the full YAML configuration (including any changes to deployment, services, etc.)
+                        sh "kubectl apply -f eks-deploy-k8s.yaml"
+
+                        // Now, update the image with the unique tag (using the commit hash)
+                        sh "kubectl set image deployment/springboot-app-deployment my-springboot-app=954976321856.dkr.ecr.ap-east-1.amazonaws.com/my-docker-repo:${GIT_COMMIT}"
+                    }
+                }
+            }
+        }
     }
 }
