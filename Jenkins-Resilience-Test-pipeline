@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    environment {
+        CHAOS_FILE = 'chaos-experiment.json'  // chaos-experiment.json
+    }
+    stages {
+        stage('Cloning Git') {
+            steps {
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/aaaadj/CICD_EKS.git']])
+            }
+        }
+        stage('Chaos Test') {
+            steps {
+                script {
+                    sh "chaos run ${env.CHAOS_FILE} --yes"
+                }
+            }
+        }
+        stage('Generate Report') {
+            steps {
+                script {
+                    sh "chaos report ${env.CHAOS_FILE} > chaos-report.html"
+                    // upload report to Jenkins
+                    archiveArtifacts artifacts: 'chaos-report.html', allowEmptyArchive: true
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "title": "Kubernetes Pod Kill Experiment",
+  "description": "This experiment randomly terminates a pod in the Kubernetes cluster to test resilience.",
+  "scope": ["kubernetes"],
+  "method": [
+    {
+      "type": "action",
+      "name": "kill-pod",
+      "provider": {
+        "type": "python",
+        "module": "chaosk8s.pod",
+        "function": "kill_pod",
+        "arguments": {
+          "namespace": "default",
+          "label_selector": "app=springboot-app-deployment"
+        }
+      }
+    }
+  ]
+}
