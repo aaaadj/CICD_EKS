@@ -3,7 +3,6 @@ pipeline {
         maven 'Maven3'
     }
     agent any
-
     environment {
         registry = "954976321856.dkr.ecr.ap-east-1.amazonaws.com/my-docker-repo"
     }
@@ -14,28 +13,36 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/aaaadj/CICD_EKS.git']])
             }
         }
-
-        // Running Tests
-        stage('Test') {
-            steps {
-                script {
-                    // Run Maven tests (including unit tests and integration tests)
-                    sh 'mvn clean test'
-                }
-            }
-        }
-
         stage('Build') {
             steps {
                 sh 'mvn clean install'
             }
         }
-
+        // Running Tests
+                stage('Test') {
+                    steps {
+                        script {
+                            // Run Maven tests (including unit tests and integration tests)
+                            sh 'mvn clean test'
+                        }
+                    }
+                }
+        // Extract the Git commit hash only once
+        stage('Prepare Commit Info') {
+            steps {
+                script {
+                    // Get the short commit hash once and store it as an environment variable
+                    env.GIT_COMMIT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                    echo "Git Commit: ${env.GIT_COMMIT}"
+                }
+            }
+        }
         // Building Docker images
         stage('Building image') {
             steps {
                 script {
-                    dockerImage = docker.build registry
+                    def imageTag = "my-docker-repo:${env.GIT_COMMIT}"
+                    dockerImage = docker.build(imageTag)  // Build image with the commit tag
                 }
             }
         }
@@ -44,7 +51,7 @@ pipeline {
         stage('Pushing to ECR') {
             steps {
                 script {
-                    def imageTag = "my-docker-repo:${GIT_COMMIT}"  // Use commit hash as tag
+                    def imageTag = "my-docker-repo:${env.GIT_COMMIT}"
                     sh "aws ecr get-login-password --region ap-east-1 | docker login --username AWS --password-stdin 954976321856.dkr.ecr.ap-east-1.amazonaws.com"
                     sh "docker tag ${imageTag} 954976321856.dkr.ecr.ap-east-1.amazonaws.com/${imageTag}"
                     sh "docker push 954976321856.dkr.ecr.ap-east-1.amazonaws.com/${imageTag}"
@@ -52,6 +59,7 @@ pipeline {
             }
         }
 
+        // Kubernetes deployment
         stage('K8S Deploy') {
             steps {
                 script {
@@ -60,7 +68,7 @@ pipeline {
                         sh "kubectl apply -f eks-deploy-k8s.yaml"
 
                         // Now, update the image with the unique tag (using the commit hash)
-                        sh "kubectl set image deployment/springboot-app-deployment my-springboot-app=954976321856.dkr.ecr.ap-east-1.amazonaws.com/my-docker-repo:${GIT_COMMIT}"
+                        sh "kubectl set image deployment/springboot-app-deployment my-springboot-app=954976321856.dkr.ecr.ap-east-1.amazonaws.com/my-docker-repo:${env.GIT_COMMIT}"
                     }
                 }
             }
