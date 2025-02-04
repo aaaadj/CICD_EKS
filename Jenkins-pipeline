@@ -13,20 +13,20 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/aaaadj/CICD_EKS.git']])
             }
         }
+        // Running Tests
+        stage('Test') {
+            steps {
+                script {
+                    // Run Maven tests (including unit tests and integration tests)
+                    sh 'mvn clean test'
+                }
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn clean install'
             }
         }
-        // Running Tests
-                stage('Test') {
-                    steps {
-                        script {
-                            // Run Maven tests (including unit tests and integration tests)
-                            sh 'mvn clean test'
-                        }
-                    }
-                }
         // Extract the Git commit hash only once
         stage('Prepare Commit Info') {
             steps {
