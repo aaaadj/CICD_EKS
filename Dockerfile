@@ -14,7 +14,7 @@ WORKDIR /app
 COPY target/real-time-balance-1.0-SNAPSHOT.jar /app/real-time-balance.jar
 
 # Expose port
-EXPOSE 8080
+EXPOSE 8081
 
 # Start the Spring Boot application
 ENTRYPOINT ["java", "-jar", "/app/real-time-balance.jar"]
