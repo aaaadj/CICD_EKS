@@ -1,0 +1,1 @@
+you can also see it in my github repo:https://github.com/aaaadj/CICD_EKS/blob/master/eks-deploy-k8s.yaml

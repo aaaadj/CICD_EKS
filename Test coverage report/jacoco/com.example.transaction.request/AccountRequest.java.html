@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">real-time-balance</a> &gt; <a href="index.source.html" class="el_package">com.example.transaction.request</a> &gt; <span class="el_source">AccountRequest.java</span></div><h1>AccountRequest.java</h1><pre class="source lang-java linenums">package com.example.transaction.request;
+
+import javax.persistence.Column;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
+
+<span class="fc" id="L9">public class AccountRequest {</span>
+
+    @NotEmpty(message = &quot;Account ID must not be empty.&quot;)
+    private String accountId;
+
+    @NotNull(message = &quot;Balance must not be null.&quot;)
+    @Positive(message = &quot;Balance must be a positive value.&quot;)
+    private BigDecimal balance;
+
+
+    private String accountType;
+
+    private String currency;
+
+    // Getters and Setters
+    public String getAccountId() {
+<span class="fc" id="L25">        return accountId;</span>
+    }
+
+    public void setAccountId(String accountId) {
+<span class="fc" id="L29">        this.accountId = accountId;</span>
+<span class="fc" id="L30">    }</span>
+
+    public BigDecimal getBalance() {
+<span class="fc" id="L33">        return balance;</span>
+    }
+
+    public void setBalance(BigDecimal balance) {
+<span class="fc" id="L37">        this.balance = balance;</span>
+<span class="fc" id="L38">    }</span>
+
+    public String getAccountType() {
+<span class="fc" id="L41">        return accountType;</span>
+    }
+
+    public void setAccountType(String accountType) {
+<span class="fc" id="L45">        this.accountType = accountType;</span>
+<span class="fc" id="L46">    }</span>
+
+    public String getCurrency() {
+<span class="fc" id="L49">        return currency;</span>
+    }
+
+    public void setCurrency(String currency) {
+<span class="fc" id="L53">        this.currency = currency;</span>
+<span class="fc" id="L54">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
