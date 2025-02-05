@@ -14,7 +14,7 @@ To facilitate the review of this project, the following folders have been create
 - **Performance test results**: Contains the results from performance testing, showing how the application behaves under load and its performance characteristics.
 - **Documentation**: Provides project documentation, including tech instructions, usage details, and any additional information that helps you understand this project is done. 
 
-You can find the resources in the corresponding folders above. If you have any further questions, feel free to reach out.
+You can find the resources in the corresponding folders above.But it is **strongly recommended that you download** these six folders and watch them, as report files (such as the HTML for JMeter testing) need to be downloaded before they can be displayed correctly in the browser. If you have any further questions, feel free to me.
 
 
 
